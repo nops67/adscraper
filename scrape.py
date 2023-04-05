@@ -1,4 +1,4 @@
-#1.0
+#1.1
 
 import requests
 from bs4 import BeautifulSoup
@@ -13,8 +13,8 @@ try:
     google_request = requests.get("https://www.google.pt/search?q=" + str(search) + "&num=50", headers=headers)
     google_soup = BeautifulSoup(google_request.content, 'lxml')
 
-    for link in google_soup.find_all('span', class_="VuuXrf"):
-        url = "https://" + link.text + "/"
+    for match in google_soup.find_all('div', class_="yuRUbf"):
+        url = match.a['href']
         session = requests.Session()
         request = session.get(url, headers=headers)
         soup = BeautifulSoup(request.content, 'lxml')
@@ -30,8 +30,8 @@ try:
                     key = "NO ADSENSE"
             else:
                 key = "NO ADSENSE"
-        print(url, key)
-        with open('output.txt', 'a') as output:
+        print(url + " - " + key)
+        with open(search + ".txt", 'a') as output:
             output.write(url + " - " + key + "\n")
         sleep(randint(2,5))
 except requests.ConnectionError:
